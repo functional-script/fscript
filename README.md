@@ -199,4 +199,110 @@ specialAdd : Number -> Number -> Number
 
 ### Declaring types and interfaces
 
+In fscript, like typescript, types and interfaces
+are declared using the "interfaces" and "types"
+keyword
+
+```fscript
+// No comma are needed if multiline
+type User = {
+  username : String
+  password : String
+}
+
+// Same for interfaces
+interface {
+  username : String
+}
+
+// You can also easily sign functions
+type Greatable = User & {
+  // Here Void stands for "no argument"
+  greating : Void -> String
+}
+
+// Like typescript you can type functions
+// and add polymorphic signature by simply
+// using parenthesis
+type Add = {
+  (Number -> Number -> Number)
+  ((Number, Number) -> Number)
+}
+```
+
+### Generics
+
+In fscript, generics are also supported but with
+some differences
+
+```fscript
+// Generics are in lowercase. Here
+// a is a generic of any type
+type Collection a = {
+  find : String -> Collection a
+  // you can also put parenthesis
+  all : Void -> Collection(a)
+}
+
+// It's also possible to specify a type
+// wich generics must extends of
+type Identifiable (User a) = {
+  getSubject : Void -> User
+}
+
+// Generics can also be declared into functions.
+// They are declare just before the signature and
+// separed by a "."
+let add : a. a -> a -> a
+  x y => x + y
+
+// Extends also works there
+type Lengthwise = {
+  length : Number
+}
+
+// No need of parenthesis when using function
+// signature and generic extension
+let length : Lengthwise a. a -> Number
+  subject => subject.length
+
+// You can also use the "KeyOf" special type
+let get : a, KeyOf(a) b, c. a -> b -> c
+  subject key => subject[key]
+
+let user = { firstname: "john" }
+
+get user, 'firstname' // "john"
+
+// You can also specify generics in the fonction
+// call (same syntax as typescript)
+get<Type(user), String, String> user, 'firstname'
+
+type Collection = {
+  [String] : Number
+}
+
+type User = {
+  firstname : String
+  lastname : String
+}
+
+type Test (KeyOf(User) a) = {
+  [a] : Boolean
+}
+
+type Test = {
+  [`get${UpFirst(KeyOf(User))}` a. a] : Boolean
+}
+
+type Test a = {
+  [`get${UpFirst(KeyOf(a))}`] : Boolean
+}
+
+let keys : Test(User) = {
+  getFirstname: true
+  getLastname: false
+}
+```
+
 This code compiles to
