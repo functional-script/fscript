@@ -14,7 +14,7 @@ You can declare variables and attach values and types
 easily. Note that any declared variable use the "const"
 keyword because fscript is made to be **immutable**.
 
-```fscript
+```funscript
 // Declare a constant
 surname = "Jonny"
 
@@ -31,13 +31,13 @@ isMajor : Boolean = true
 Wich compiles to
 
 ```typescript
-const surname = "Jonny";
+const surname = 'Jonny'
 
-const age: number = 30;
+const age: number = 30
 
-const name: string = "John";
+const name: string = 'John'
 
-const isMajor: boolean = true;
+const isMajor: boolean = true
 ```
 
 You can also declare Array and objet using the following
@@ -66,16 +66,16 @@ jane : Type john = {
 The following code compiles to
 
 ```typescript
-const notes: Array<number> = [12, 13, 14, 19];
+const notes: Array<number> = [12, 13, 14, 19]
 
-const students: Array<string> = ["john", "Elly", "Jane"];
+const students: Array<string> = ['john', 'Elly', 'Jane']
 
-const john = { firstname: "John", lastname: "Doe" };
+const john = { firstname: 'John', lastname: 'Doe' }
 
 const jane: typeof john = {
-  firstname: "Jane",
-  lastname: "Doe",
-};
+  firstname: 'Jane',
+  lastname: 'Doe',
+}
 ```
 
 ### Desructuring Array and Objects
