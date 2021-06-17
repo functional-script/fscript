@@ -14,17 +14,17 @@ You can declare variables and attach values and types
 easily. Note that any declared variable use the "const"
 keyword because fscript is made to be **immutable**.
 
-```typescript
-// Declare a constant
+```coffee
+# Declare a constant
 def surname = "Jonny"
 
-// Declare a number
+# Declare a number
 def age : Number = 30
 
-// Declare a string
+# Declare a string
 def name : String = "John"
 
-// Declare a boolean
+# Declare a boolean
 def isMajor : Boolean = true
 ```
 
@@ -43,21 +43,21 @@ const isMajor: boolean = true
 You can also declare Array and objet using the following
 syntax:
 
-```ts
-// Declare an array of number
+```coffee
+# Declare an array of number
 def notes : [Number] = [ 12, 13, 14, 19 ]
 
-// Declare an array of string using the
-// generic syntax
+# Declare an array of string using the
+# generic syntax
 def students : Array String = [ "john", "Elly", "Jane" ]
 
-// Create an objet
+# Create an objet
 def john = { firstname: "John",  lastname: "Doe" }
 
-// Create an objet in multiline using the "Type"
-// keyword meaning "typeof". Note that no comma
-// are needed in multiline
-def jane : Type john = {
+# Create an objet in multiline using the "Type"
+# keyword meaning "typeof". Note that no comma
+# are needed in multiline
+def jane : TypeOf john = {
   firstname: "Jane"
   lastname: "Doe"
 }
@@ -83,32 +83,32 @@ const jane: typeof john = {
 In fscript, like in javascript you can
 destructure arrays and objets
 
-```ts
+```coffee
 def user = {
   firstname: "John"
-  lastname: "Doe
+  lastname: "Doe"
 }
 
 def { firstname, lastname } = user
 
 console.log firstname, lastname
 
-// Or with aliases
+# Or with aliases
 
 def { firstname: fname, lastname: lname } = user
 
 console.log fname, lname
 
-// You can also put default values
+# You can also put default values
 def { age = 30 } = user
 console.log age
 
-// The rest operator
+# The rest operator
 def { lastname, ...rest } = user
 
 console.log rest.firstname
 
-// Same exists with array
+# Same exists with array
 def [ first, second, ..rest ] = [ 13, 14, 19, 16 ]
 ```
 
@@ -121,38 +121,38 @@ Let's take a tour of basic function definitions:
 
 #### The basics
 
-```ts
-// A basic hello function
+```coffee
+# A basic hello function
 def hello : String -> String = name => `Hello ${name}`
 
-// Calling the hello function. Parenthesis arn't
-// needed !
+# Calling the hello function. Parenthesis arn't
+# needed !
 hello("John")
-// Same as
+# Same as
 hello "John"
 
-// Calling function in a function
+# Calling function in a function
 console.log(hello("John"))
-// or
+# or
 console.log hello "John"
 
-// A basic add function but using the
-// multiline syntax. Note the the "=" sign is not
-// needed, tabulation replaced it.
-// Return values are automatically returned !
+# A basic add function but using the
+# multiline syntax. Note the the "=" sign is not
+# needed, tabulation replaced it.
+# Return values are automatically returned !
 def add : Number -> Number -> Number
   x y => x + y
 
 add(3, 4)
 add 3, 4
-// When working with native types (String, Number, Boolean,
-// RegExp, Array or Objet), no comma are needed between parameters
+# When working with native types (String, Number, Boolean,
+# RegExp, Array or Objet), no comma are needed between parameters
 add 3 4
 
-// Function are automatically curried
+# Function are automatically curried
 def add3 : Number -> Number = add 3
 
-// Or with the multine syntax
+# Or with the multine syntax
 def add3 : Number -> Number
   add 3
 
@@ -164,15 +164,15 @@ def y2 : Number = add 3 5
 
 console.log x, y
 
-// You can also make function returning nothing
-// using the void keyword and type
+# You can also make function returning nothing
+# using the void keyword and type
 def log : String -> Void
   member =>
     console.log member
     void
 
-// Finally, if you want fscript to force uncurried
-// function you can use parenthesis into your signature
+# Finally, if you want fscript to force uncurried
+# function you can use parenthesis into your signature
 def uncurriedAdd : (Number, Number) -> Number
   x y => x + y
 ```
@@ -182,15 +182,15 @@ def uncurriedAdd : (Number, Number) -> Number
 In fscript any function introduce a powerfull pattern
 matching system :
 
-```ts
+```coffee
 def greatings : String -> String
   "John" => "Hey John !"
   "Jane" => "Greatings dear Jane"
   otherName => `Hello ${otherName}`
 
-// You can also add special conditions into
-// your pattern matching using the "|" character
-// wich acts like a where !
+# You can also add special conditions into
+# your pattern matching using the "|" character
+# wich acts like a where !
 def specialAdd : Number -> Number -> Number
   x y | x > 10 and y < 9 =>
     (x + 10) + (y * 20)
@@ -203,27 +203,27 @@ In fscript, like typescript, types and interfaces
 are declared using the "interfaces" and "types"
 keyword
 
-```ts
-// No comma are needed if multiline
+```coffee
+# No comma are needed if multiline
 type User = {
   username : String
   password : String
 }
 
-// Same for interfaces
+# Same for interfaces
 interface {
   username : String
 }
 
-// You can also easily sign functions
+# You can also easily sign functions
 type Greatable = User & {
-  // Here Void stands for "no argument"
+  # Here Void stands for "no argument"
   greating : Void -> String
 }
 
-// Like typescript you can type functions
-// and add polymorphic signature by simply
-// using parenthesis
+# Like typescript you can type functions
+# and add polymorphic signature by simply
+# using parenthesis
 type Add = {
   (Number -> Number -> Number)
   ((Number, Number) -> Number)
@@ -235,48 +235,48 @@ type Add = {
 In fscript, generics are also supported but with
 some differences
 
-```ts
-// Generics are in lowercase. Here
-// a is a generic of any type
+```coffee
+# Generics are in lowercase. Here
+# a is a generic of any type
 type Collection a = {
-  find : String -> Collection a
-  // you can also put parenthesis
-  all : Void -> Collection(a)
+  find : String -> Collection(a)
+  # parenthesis are optional
+  all : Void -> Collection a
 }
 
-// It's also possible to specify a type
-// wich generics must extends of
+# It's also possible to specify a type
+# wich generics must extends of
 type Identifiable (User a) = {
   getSubject : Void -> User
 }
 
-// Generics can also be declared into functions.
-// They are declare just before the signature and
-// separed by a "."
+# Generics can also be declared into functions.
+# They are declare just before the signature and
+# separed by a "."
 def add : a. a -> a -> a
   x y => x + y
 
-// Extends also works there
+# Extends also works there
 type Lengthwise = {
   length : Number
 }
 
-// No need of parenthesis when using function
-// signature and generic extension
+# No need of parenthesis when using function
+# signature and generic extension
 def length : Lengthwise a. a -> Number
   subject => subject.length
 
-// You can also use the "KeyOf" special type
+# You can also use the "KeyOf" special type
 def get : a, KeyOf(a) b, c. a -> b -> c
   subject key => subject[key]
 
 def user = { firstname: "john" }
 
-get user, 'firstname' // "john"
+get user, 'firstname' # "john"
 
-// You can also specify generics in the fonction
-// call (same syntax as typescript)
-get<Type(user), String, String> user, 'firstname'
+# You can also specify generics in the fonction
+# call (same syntax as typescript)
+get<TypeOf user, String, String> user, 'firstname'
 
 type Collection = {
   [String] : Number
@@ -292,14 +292,14 @@ type Test (KeyOf(User) a) = {
 }
 
 type Test = {
-  [`get${UpFirst(KeyOf(User))}` a. a] : Boolean
+  [`get${UpFirst KeyOf User}` a. a] : Boolean
 }
 
 type Test a = {
-  [`get${UpFirst(KeyOf(a))}`] : Boolean
+  [`get${UpFirst KeyOf a}`] : Boolean
 }
 
-def keys : Test(User) = {
+def keys : Test User = {
   getFirstname: true
   getLastname: false
 }
