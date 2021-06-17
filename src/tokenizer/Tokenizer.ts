@@ -11,6 +11,8 @@ import { LiteralParser } from './parser/LiteralParser'
 import { GroupParser } from './parser/GroupParser'
 import { ArrayParser } from './parser/ArrayParser'
 import { BlockParser } from './parser/BlockParser'
+import { TokenError } from './TokenError'
+import { calculatePosition } from './Util'
 
 /**
  * Allow to parse a given string and transform
@@ -67,6 +69,8 @@ export class Tokenizer {
         : this.parseLine(newLine, [...tokens, token])
     }
 
-    return tokens
+    let position = calculatePosition(tokens, line)
+
+    throw new TokenError('UNKNOWN', line, position)
   }
 }

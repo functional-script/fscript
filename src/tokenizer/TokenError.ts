@@ -10,7 +10,7 @@ export class TokenError extends Error {
   public position: Token['position']
 
   constructor(kind: TokenKind, subject: string, position: Token['position']) {
-    let message = `Error(Token): Unable to parse the ${kind} at ${position.line}:${position.start} in "${subject}"`
+    let message = `Error(Token): Unable to parse the ${kind} token at ${position.line}:${position.start} in "${subject}"`
 
     super(message)
 

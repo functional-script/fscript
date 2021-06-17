@@ -6,7 +6,7 @@ import { TokenError } from '../TokenError'
 
 export class KeywordParser implements TokenParser {
   private re =
-    /^(def|var|let|const|class|type|if|else|for|while|do|throw|new|async|await|yield|return|then)/
+    /^(def|var|let|const|class|type|if|else|for|while|do|throw|new|async|await|yield|return|then|import|export|from|as|with)/
 
   public supports(line: string): boolean {
     return this.re.test(line)

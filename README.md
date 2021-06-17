@@ -14,18 +14,18 @@ You can declare variables and attach values and types
 easily. Note that any declared variable use the "const"
 keyword because fscript is made to be **immutable**.
 
-```funscript
+```typescript
 // Declare a constant
-surname = "Jonny"
+def surname = "Jonny"
 
 // Declare a number
-age : Number = 30
+def age : Number = 30
 
 // Declare a string
-name : String = "John"
+def name : String = "John"
 
 // Declare a boolean
-isMajor : Boolean = true
+def isMajor : Boolean = true
 ```
 
 Wich compiles to
@@ -43,21 +43,21 @@ const isMajor: boolean = true
 You can also declare Array and objet using the following
 syntax:
 
-```fscript
+```ts
 // Declare an array of number
-notes : [Number] = [ 12, 13, 14, 19 ]
+def notes : [Number] = [ 12, 13, 14, 19 ]
 
 // Declare an array of string using the
 // generic syntax
-students : Array String = [ "john", "Elly", "Jane" ]
+def students : Array String = [ "john", "Elly", "Jane" ]
 
 // Create an objet
-john = { firstname: "John",  lastname: "Doe" }
+def john = { firstname: "John",  lastname: "Doe" }
 
 // Create an objet in multiline using the "Type"
 // keyword meaning "typeof". Note that no comma
 // are needed in multiline
-jane : Type john = {
+def jane : Type john = {
   firstname: "Jane"
   lastname: "Doe"
 }
@@ -83,33 +83,33 @@ const jane: typeof john = {
 In fscript, like in javascript you can
 destructure arrays and objets
 
-```fscript
-user = {
+```ts
+def user = {
   firstname: "John"
   lastname: "Doe
 }
 
-{ firstname, lastname } = user
+def { firstname, lastname } = user
 
 console.log firstname, lastname
 
 // Or with aliases
 
-{ firstname: fname, lastname: lname } = user
+def { firstname: fname, lastname: lname } = user
 
 console.log fname, lname
 
 // You can also put default values
-{ age = 30 } = user
+def { age = 30 } = user
 console.log age
 
 // The rest operator
-{ lastname, ...rest } = user
+def { lastname, ...rest } = user
 
 console.log rest.firstname
 
 // Same exists with array
-[ first, second, ..rest ] = [ 13, 14, 19, 16 ]
+def [ first, second, ..rest ] = [ 13, 14, 19, 16 ]
 ```
 
 ### Declaring and using functions
@@ -121,9 +121,9 @@ Let's take a tour of basic function definitions:
 
 #### The basics
 
-```fscript
+```ts
 // A basic hello function
-hello : String -> String = name => `Hello ${name}`
+def hello : String -> String = name => `Hello ${name}`
 
 // Calling the hello function. Parenthesis arn't
 // needed !
@@ -140,7 +140,7 @@ console.log hello "John"
 // multiline syntax. Note the the "=" sign is not
 // needed, tabulation replaced it.
 // Return values are automatically returned !
-add : Number -> Number -> Number
+def add : Number -> Number -> Number
   x y => x + y
 
 add(3, 4)
@@ -150,30 +150,30 @@ add 3, 4
 add 3 4
 
 // Function are automatically curried
-add3 : Number -> Number = add 3
+def add3 : Number -> Number = add 3
 
 // Or with the multine syntax
-add3 : Number -> Number
+def add3 : Number -> Number
   add 3
 
-x : Number = add3 5
+def x : Number = add3 5
 
-y : Number = add 3, 5
+def y : Number = add 3, 5
 
-y : Number = add 3 5
+def y2 : Number = add 3 5
 
 console.log x, y
 
 // You can also make function returning nothing
 // using the void keyword and type
-log : String -> Void
+def log : String -> Void
   member =>
     console.log member
     void
 
 // Finally, if you want fscript to force uncurried
 // function you can use parenthesis into your signature
-uncurriedAdd : (Number, Number) -> Number
+def uncurriedAdd : (Number, Number) -> Number
   x y => x + y
 ```
 
@@ -182,8 +182,8 @@ uncurriedAdd : (Number, Number) -> Number
 In fscript any function introduce a powerfull pattern
 matching system :
 
-```fscript
-greatings : String -> String
+```ts
+def greatings : String -> String
   "John" => "Hey John !"
   "Jane" => "Greatings dear Jane"
   otherName => `Hello ${otherName}`
@@ -191,7 +191,7 @@ greatings : String -> String
 // You can also add special conditions into
 // your pattern matching using the "|" character
 // wich acts like a where !
-specialAdd : Number -> Number -> Number
+def specialAdd : Number -> Number -> Number
   x y | x > 10 and y < 9 =>
     (x + 10) + (y * 20)
   x y => x + y
@@ -203,7 +203,7 @@ In fscript, like typescript, types and interfaces
 are declared using the "interfaces" and "types"
 keyword
 
-```fscript
+```ts
 // No comma are needed if multiline
 type User = {
   username : String
@@ -235,7 +235,7 @@ type Add = {
 In fscript, generics are also supported but with
 some differences
 
-```fscript
+```ts
 // Generics are in lowercase. Here
 // a is a generic of any type
 type Collection a = {
@@ -253,7 +253,7 @@ type Identifiable (User a) = {
 // Generics can also be declared into functions.
 // They are declare just before the signature and
 // separed by a "."
-let add : a. a -> a -> a
+def add : a. a -> a -> a
   x y => x + y
 
 // Extends also works there
@@ -263,14 +263,14 @@ type Lengthwise = {
 
 // No need of parenthesis when using function
 // signature and generic extension
-let length : Lengthwise a. a -> Number
+def length : Lengthwise a. a -> Number
   subject => subject.length
 
 // You can also use the "KeyOf" special type
-let get : a, KeyOf(a) b, c. a -> b -> c
+def get : a, KeyOf(a) b, c. a -> b -> c
   subject key => subject[key]
 
-let user = { firstname: "john" }
+def user = { firstname: "john" }
 
 get user, 'firstname' // "john"
 
@@ -299,10 +299,8 @@ type Test a = {
   [`get${UpFirst(KeyOf(a))}`] : Boolean
 }
 
-let keys : Test(User) = {
+def keys : Test(User) = {
   getFirstname: true
   getLastname: false
 }
 ```
-
-This code compiles to

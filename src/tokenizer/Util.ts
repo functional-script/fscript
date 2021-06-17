@@ -55,3 +55,35 @@ export const getEndColumn = (
   tokens: TokenList,
   subject: { length: number },
 ): number => getStartColumn(tokens) + (subject.length - 1)
+
+/**
+ * Test if a token exists for the given line and colum
+ */
+export const hasTokenAt = (
+  position: Omit<Token['position'], 'end'>,
+  tokens: TokenList,
+): boolean =>
+  tokens.filter(
+    t =>
+      t.position.line === position.line && t.position.start === position.start,
+  ).length > 0
+
+/**
+ * Retrieve the token at the given position
+ */
+export const getTokenAt = (
+  position: Omit<Token['position'], 'end'>,
+  tokens: TokenList,
+): Token => {
+  let token = tokens.find(
+    t =>
+      t.position.line === position.line && t.position.start === position.start,
+  )
+
+  if (!token)
+    throw new Error(
+      `Unable to find the token at ${position.line}:${position.start}`,
+    )
+
+  return token
+}

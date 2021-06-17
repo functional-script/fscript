@@ -17,3 +17,4 @@ export type TokenKind =
   | 'BLOCK_END'
   | 'ARRAY_START'
   | 'ARRAY_END'
+  | 'UNKNOWN'
