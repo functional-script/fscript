@@ -165,16 +165,25 @@ def y2 : Number = add 3 5
 console.log x, y
 
 # You can also make function returning nothing
-# using the void keyword and type
+# using the "Void" type
 def log : String -> Void
   member =>
     console.log member
-    void
+    10
 
 # Finally, if you want fscript to force uncurried
 # function you can use parenthesis into your signature
 def uncurriedAdd : (Number, Number) -> Number
   x y => x + y
+
+# Async function are automatically detected when
+# returning Promise !
+def promise : Promise String = Promise.resolve "test"
+
+def helloPromise : Promise String -> Promise String
+  p =>
+    def name = await p
+    `Hello ${name.toUpperCase()}`
 ```
 
 #### Pattern Matching
