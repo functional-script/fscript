@@ -184,6 +184,27 @@ def helloPromise : Promise String -> Promise String
   p =>
     def name = await p
     `Hello ${name.toUpperCase()}`
+
+def f : Promise String -> Promise String
+  (await name) => name.toUpperCase()
+
+def g : Promise String -> Promise String
+  (await name) => name.replace /John/g "Jean"
+
+def t : Promise String -> Promise String
+  (await name) => name.replace /Doe/g "Dupont"
+
+def foo : Promise String -> Promise String
+  g >> t >> f
+
+def foo2 : Promise String -> Promise String
+  (await name) =>
+    name
+    |> ?.replace /John/g "Jean"
+    |> ?.replace /Doe/g "Dupont"
+    |> ?.toUpperCase()
+
+foo Promise.resolve "John Doe" # Promise "JEAN DUPONT"
 ```
 
 #### Pattern Matching
