@@ -1,4 +1,5 @@
 import { Token } from './types'
+import { NewLineParser } from './parsers'
 
 /**
  * Represent a suit of token in wich you can operate
@@ -8,6 +9,14 @@ export class TokenList {
 
   get length(): number {
     return this.tokens.length
+  }
+
+  get last(): Token | undefined {
+    return this.tokens[this.tokens.length - 1]
+  }
+
+  get hasLast(): boolean {
+    return this.tokens.length > 0
   }
 
   constructor(tokens: Token[]) {
@@ -122,5 +131,57 @@ export class TokenList {
    */
   reduce<Data>(fn: (acc: Data, token: Token) => Data, acc: Data): Data {
     return this.tokens.reduce(fn, acc)
+  }
+
+  /**
+   * Calculate the next position
+   */
+  calculateNextPostion(subject: { length: number }): Token['position'] {
+    return {
+      line: this.guessLineNumber(),
+      start: this.guessStartColumn(),
+      end: this.guessEndColumn(subject),
+    }
+  }
+
+  /**
+   * Return the guessed line number of
+   */
+  private guessLineNumber(): number {
+    let last = this.last
+
+    if (!last) {
+      return 1
+    }
+
+    if (last.name === NewLineParser.ID) {
+      return last.position.line + 1
+    }
+
+    return last.position.line
+  }
+
+  /**
+   * Returned the guessed starting column number
+   */
+  private guessStartColumn(): number {
+    let last = this.last
+
+    if (!last) {
+      return 0
+    }
+
+    if (last.name === NewLineParser.ID) {
+      return 0
+    }
+
+    return last.position.end + 1
+  }
+
+  /**
+   * Returned the guessed last column number
+   */
+  private guessEndColumn(subject: { length: number }): number {
+    return this.guessStartColumn() + (subject.length - 1)
   }
 }
