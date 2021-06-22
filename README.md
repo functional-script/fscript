@@ -8,6 +8,10 @@ by the ML familly wich compiles to JavaScript or TypeScript.
 In FScript code are made to be simple and very lightweight
 in syntax.
 
+## AST examples
+
+- [Example of ast generation](./doc/ast.md)
+
 ### Variables
 
 You can declare variables and attach values and types
@@ -109,7 +113,7 @@ def { lastname, ...rest } = user
 console.log rest.firstname
 
 # Same exists with array
-def [ first, second, ..rest ] = [ 13, 14, 19, 16 ]
+def [ first, second, ...rest ] = [ 13, 14, 19, 16 ]
 ```
 
 ### Declaring and using functions
@@ -200,7 +204,8 @@ def foo : Promise String -> Promise String
 def foo2 : Promise String -> Promise String
   (await name) =>
     name
-    |> ?.replace /John/g "Jean"
+    |> n => n.replace /John/g "Jean"
+    |> () => ?.replace /Doe/g "Dupont"
     |> ?.replace /Doe/g "Dupont"
     |> ?.toUpperCase()
 
@@ -241,7 +246,7 @@ type User = {
 }
 
 # Same for interfaces
-interface {
+interface User {
   username : String
 }
 
@@ -297,16 +302,20 @@ def length : Lengthwise a. a -> Number
   subject => subject.length
 
 # You can also use the "KeyOf" special type
-def get : a, KeyOf(a) b, c. a -> b -> c
-  subject key => subject[key]
+def get
+  : Object subject
+  , (KeyOf subject) key
+  , data
+  . key -> subject -> data
+  = key subject => subject[key]
 
 def user = { firstname: "john" }
 
-get user, 'firstname' # "john"
+get 'firstname' user # "john"
 
 # You can also specify generics in the fonction
 # call (same syntax as typescript)
-get<TypeOf user, String, String> user, 'firstname'
+get<TypeOf user, 'firstname', String> user, 'firstname'
 
 type Collection = {
   [String] : Number
@@ -317,7 +326,7 @@ type User = {
   lastname : String
 }
 
-type Test (KeyOf(User) a) = {
+type Test (KeyOf User) a = {
   [a] : Boolean
 }
 
