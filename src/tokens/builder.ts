@@ -1,17 +1,17 @@
 import { TokenParser } from './types'
 import { TokenList } from './list'
 import {
-  OperatorParser,
-  IdentifierParser,
-  LiteralParser,
-  GroupParser,
-  ArrayParser,
-  BlockParser,
-  NewLineParser,
-  IndentParser,
-  SpaceParser,
-  KeywordParser,
-  SeparatorParser,
+  OperatorToken,
+  IdentifierToken,
+  LiteralToken,
+  GroupToken,
+  ArrayToken,
+  BlockToken,
+  NewLineToken,
+  IndentToken,
+  SpaceToken,
+  KeywordToken,
+  SeparatorToken,
 } from './parsers'
 
 /**
@@ -26,17 +26,17 @@ export class TokenBuilder {
    */
   public static createDefault(): TokenBuilder {
     return new TokenBuilder([
-      new NewLineParser(),
-      new IndentParser(),
-      new SpaceParser(),
-      new KeywordParser(),
-      new SeparatorParser(),
-      new OperatorParser(),
-      new IdentifierParser(),
-      new LiteralParser(),
-      new GroupParser(),
-      new ArrayParser(),
-      new BlockParser(),
+      new NewLineToken(),
+      new IndentToken(),
+      new SpaceToken(),
+      new KeywordToken(),
+      new SeparatorToken(),
+      new OperatorToken(),
+      new IdentifierToken(),
+      new LiteralToken(),
+      new GroupToken(),
+      new ArrayToken(),
+      new BlockToken(),
     ])
   }
 

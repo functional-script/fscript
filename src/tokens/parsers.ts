@@ -5,7 +5,7 @@ import { TokenError } from './error'
 /**
  * Allows to parse a new line token
  */
-export class NewLineParser implements TokenParser {
+export class NewLineToken implements TokenParser {
   get re(): RegExp {
     return /^(\r|\n)/
   }
@@ -22,22 +22,22 @@ export class NewLineParser implements TokenParser {
     let lastToken = list.hasLast ? list.last : null
 
     return {
-      name: NewLineParser.ID,
+      name: NewLineToken.ID,
       value: '\n',
       rawValue: '\n',
       position: {
         line: lastToken
-          ? lastToken.name === NewLineParser.ID
+          ? lastToken.name === NewLineToken.ID
             ? lastToken.position.line + 1
             : lastToken.position.line
           : 1,
         start: lastToken
-          ? lastToken.name === NewLineParser.ID
+          ? lastToken.name === NewLineToken.ID
             ? 0
             : lastToken.position.end + 1
           : 0,
         end: lastToken
-          ? lastToken.name === NewLineParser.ID
+          ? lastToken.name === NewLineToken.ID
             ? 0
             : lastToken.position.end + 1
           : 0,
@@ -57,7 +57,7 @@ export class NewLineParser implements TokenParser {
 /**
  * Allow to parse an indentation
  */
-export class IndentParser implements TokenParser {
+export class IndentToken implements TokenParser {
   static get ID(): string {
     return 'INDENT'
   }
@@ -69,7 +69,7 @@ export class IndentParser implements TokenParser {
       return /^ /.test(code) && list.length === 0
     }
 
-    return /^ /.test(code) && lastToken.name === NewLineParser.ID
+    return /^ /.test(code) && lastToken.name === NewLineToken.ID
   }
 
   public parse(code: string, list: TokenList): Token {
@@ -77,11 +77,11 @@ export class IndentParser implements TokenParser {
     let position = list.calculateNextPostion(match ? match[0] : { length: 0 })
 
     if (!match) {
-      throw new TokenError(IndentParser.ID, code, position)
+      throw new TokenError(IndentToken.ID, code, position)
     }
 
     return {
-      name: IndentParser.ID,
+      name: IndentToken.ID,
       value: match[0].length,
       rawValue: match[0],
       position,
@@ -96,7 +96,7 @@ export class IndentParser implements TokenParser {
 /**
  * Allows to parse spaces
  */
-export class SpaceParser implements TokenParser {
+export class SpaceToken implements TokenParser {
   static get ID(): string {
     return 'SPACE'
   }
@@ -110,11 +110,11 @@ export class SpaceParser implements TokenParser {
     let position = list.calculateNextPostion(match ? match[0] : { length: 0 })
 
     if (!match) {
-      throw new TokenError(SpaceParser.ID, code, position)
+      throw new TokenError(SpaceToken.ID, code, position)
     }
 
     return {
-      name: SpaceParser.ID,
+      name: SpaceToken.ID,
       value: ' ',
       rawValue: match[0],
       position,
@@ -129,7 +129,7 @@ export class SpaceParser implements TokenParser {
 /**
  * Parse an fscript keyword
  */
-export class KeywordParser implements TokenParser {
+export class KeywordToken implements TokenParser {
   static get ID(): string {
     return 'KEYWORD'
   }
@@ -146,11 +146,11 @@ export class KeywordParser implements TokenParser {
     let position = list.calculateNextPostion(match ? match[1] : { length: 0 })
 
     if (!match) {
-      throw new TokenError(KeywordParser.ID, code, position)
+      throw new TokenError(KeywordToken.ID, code, position)
     }
 
     return {
-      name: KeywordParser.ID,
+      name: KeywordToken.ID,
       value: match[1],
       rawValue: match[1],
       position,
@@ -165,7 +165,7 @@ export class KeywordParser implements TokenParser {
 /**
  * Parse an fscript separator
  */
-export class SeparatorParser implements TokenParser {
+export class SeparatorToken implements TokenParser {
   static get ID(): string {
     return 'SEPARATOR'
   }
@@ -181,11 +181,11 @@ export class SeparatorParser implements TokenParser {
     let position = list.calculateNextPostion(match ? match[1] : { length: 0 })
 
     if (!match) {
-      throw new TokenError(SeparatorParser.ID, code, position)
+      throw new TokenError(SeparatorToken.ID, code, position)
     }
 
     return {
-      name: SeparatorParser.ID,
+      name: SeparatorToken.ID,
       value: match[1],
       rawValue: match[1],
       position,
@@ -200,7 +200,7 @@ export class SeparatorParser implements TokenParser {
 /**
  * Parse any fscript operator
  */
-export class OperatorParser implements TokenParser {
+export class OperatorToken implements TokenParser {
   static get ID(): string {
     return 'OPERATOR'
   }
@@ -217,11 +217,11 @@ export class OperatorParser implements TokenParser {
     let position = list.calculateNextPostion(match ? match[1] : { length: 0 })
 
     if (!match) {
-      throw new TokenError(OperatorParser.ID, code, position)
+      throw new TokenError(OperatorToken.ID, code, position)
     }
 
     return {
-      name: OperatorParser.ID,
+      name: OperatorToken.ID,
       value: match[1],
       rawValue: match[1],
       position,
@@ -236,7 +236,7 @@ export class OperatorParser implements TokenParser {
 /**
  * Parse an fscript identifier
  */
-export class IdentifierParser implements TokenParser {
+export class IdentifierToken implements TokenParser {
   static get ID(): string {
     return 'IDENTIFIER'
   }
@@ -252,11 +252,11 @@ export class IdentifierParser implements TokenParser {
     let position = list.calculateNextPostion(match ? match[1] : { length: 0 })
 
     if (!match) {
-      throw new TokenError(IdentifierParser.ID, code, position)
+      throw new TokenError(IdentifierToken.ID, code, position)
     }
 
     return {
-      name: IdentifierParser.ID,
+      name: IdentifierToken.ID,
       value: match[1],
       rawValue: match[1],
       position,
@@ -271,7 +271,7 @@ export class IdentifierParser implements TokenParser {
 /**
  * Parse an fscript literral
  */
-export class LiteralParser implements TokenParser {
+export class LiteralToken implements TokenParser {
   static get ID(): string {
     return 'LITTERAL'
   }
@@ -288,11 +288,11 @@ export class LiteralParser implements TokenParser {
     let position = list.calculateNextPostion(match ? match[1] : { length: 0 })
 
     if (!match) {
-      throw new TokenError(LiteralParser.ID, code, position)
+      throw new TokenError(LiteralToken.ID, code, position)
     }
 
     return {
-      name: LiteralParser.ID,
+      name: LiteralToken.ID,
       value: match[1],
       rawValue: match[1],
       position,
@@ -307,7 +307,7 @@ export class LiteralParser implements TokenParser {
 /**
  * Parse an fscript group using parenthesis
  */
-export class GroupParser implements TokenParser {
+export class GroupToken implements TokenParser {
   static get ID_START(): string {
     return 'GROUP_START'
   }
@@ -328,14 +328,14 @@ export class GroupParser implements TokenParser {
 
     if (!match) {
       throw new TokenError(
-        `${GroupParser.ID_START}|${GroupParser.ID_END}`,
+        `${GroupToken.ID_START}|${GroupToken.ID_END}`,
         code,
         position,
       )
     }
 
     return {
-      name: match[1] === ')' ? GroupParser.ID_END : GroupParser.ID_START,
+      name: match[1] === ')' ? GroupToken.ID_END : GroupToken.ID_START,
       value: match[1],
       rawValue: match[1],
       position,
@@ -351,7 +351,7 @@ export class GroupParser implements TokenParser {
  * Parse instruction block or objet group definitions
  * "{}"
  */
-export class BlockParser implements TokenParser {
+export class BlockToken implements TokenParser {
   static get ID_START(): string {
     return 'BLOCK_START'
   }
@@ -372,14 +372,14 @@ export class BlockParser implements TokenParser {
 
     if (!match) {
       throw new TokenError(
-        `${BlockParser.ID_START}|${BlockParser.ID_END}`,
+        `${BlockToken.ID_START}|${BlockToken.ID_END}`,
         code,
         position,
       )
     }
 
     return {
-      name: match[1] === '}' ? BlockParser.ID_END : BlockParser.ID_START,
+      name: match[1] === '}' ? BlockToken.ID_END : BlockToken.ID_START,
       value: match[1],
       rawValue: match[1],
       position,
@@ -394,7 +394,7 @@ export class BlockParser implements TokenParser {
 /**
  * Parse array bracket syntax "[]"
  */
-export class ArrayParser implements TokenParser {
+export class ArrayToken implements TokenParser {
   static get ID_START(): string {
     return 'ARRAY_START'
   }
@@ -415,14 +415,14 @@ export class ArrayParser implements TokenParser {
 
     if (!match) {
       throw new TokenError(
-        `${ArrayParser.ID_START}|${ArrayParser.ID_END}`,
+        `${ArrayToken.ID_START}|${ArrayToken.ID_END}`,
         code,
         position,
       )
     }
 
     return {
-      name: match[1] === ']' ? ArrayParser.ID_END : ArrayParser.ID_START,
+      name: match[1] === ']' ? ArrayToken.ID_END : ArrayToken.ID_START,
       value: match[1],
       rawValue: match[1],
       position,

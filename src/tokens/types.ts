@@ -15,6 +15,15 @@ export type Token = {
 }
 
 /**
+ * Represent a cursor inside a token list
+ */
+export type TokenCursor = {
+  line: number
+  column: number
+  toString: () => string
+}
+
+/**
  * This is the shape of a token parser
  */
 export type TokenParser = {
@@ -33,3 +42,17 @@ export type TokenParser = {
    */
   substract(subject: string, tokens: TokenList): string
 }
+
+/**
+ * Define the shape of a token identifier
+ */
+export type SimpleTokenIdentifier = {
+  ID: string
+}
+
+export type DoubleTokenIdentifier = {
+  ID_START: string
+  ID_END: string
+}
+
+export type TokenIdentifier = SimpleTokenIdentifier | DoubleTokenIdentifier

@@ -1,5 +1,5 @@
-import { Token } from './types'
-import { NewLineParser } from './parsers'
+import { Token, TokenCursor } from './types'
+import { NewLineToken } from './parsers'
 
 /**
  * Represent a suit of token in wich you can operate
@@ -63,6 +63,25 @@ export class TokenList {
   }
 
   /**
+   * Retrieve a token by it's index
+   */
+  get(index: number): Token {
+    let token = this.tokens[index]
+
+    if (!token)
+      throw new RangeError(`There is no token present at the index ${index}`)
+
+    return token
+  }
+
+  /**
+   * Test if the token at the current index exists
+   */
+  hasIndex(index: number): boolean {
+    return undefined !== this.tokens[index]
+  }
+
+  /**
    * Retrieve the token at the given position
    */
   at(line: number, start: number): Token {
@@ -103,6 +122,36 @@ export class TokenList {
           token.position.end >= start,
       ),
     )
+  }
+
+  /**
+   * Remove all tokens between the given start and end
+   */
+  removeBetween(start: TokenCursor, end: TokenCursor): TokenList {
+    let tokensToRemove = this.tokens
+      .filter(
+        token =>
+          start.line >= token.position.line && end.line <= token.position.line,
+      )
+      .filter(token => {
+        if (token.position.line === start.line) {
+          return start.column >= token.position.start
+        }
+
+        if (token.position.line === end.line) {
+          return end.column <= token.position.end
+        }
+
+        return true
+      })
+
+    let list = null
+
+    for (let token of tokensToRemove) {
+      list = this.remove(token.position.line, token.position.start)
+    }
+
+    return list || this
   }
 
   /**
@@ -154,7 +203,7 @@ export class TokenList {
       return 1
     }
 
-    if (last.name === NewLineParser.ID) {
+    if (last.name === NewLineToken.ID) {
       return last.position.line + 1
     }
 
@@ -171,7 +220,7 @@ export class TokenList {
       return 0
     }
 
-    if (last.name === NewLineParser.ID) {
+    if (last.name === NewLineToken.ID) {
       return 0
     }
 

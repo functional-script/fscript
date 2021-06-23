@@ -1,5 +1,5 @@
 import { TokenBuilder } from './builder'
-import { KeywordParser } from './parsers'
+import { KeywordToken } from './parsers'
 
 describe('A TokenBuilder', () => {
   let builder = TokenBuilder.createDefault()
@@ -8,7 +8,7 @@ describe('A TokenBuilder', () => {
     let code = 'def x : Number = 10'
     let tokens = builder.buildFromString(code)
 
-    expect(tokens.at(1, 0).name).toBe(KeywordParser.ID)
+    expect(tokens.at(1, 0).name).toBe(KeywordToken.ID)
   })
 
   it('can parse a multiline of code', () => {
@@ -20,8 +20,8 @@ describe('A TokenBuilder', () => {
     `
     let tokens = builder.buildFromString(code)
 
-    expect(tokens.at(2, 6).name).toBe(KeywordParser.ID)
-    expect(tokens.at(4, 6).name).toBe(KeywordParser.ID)
+    expect(tokens.at(2, 6).name).toBe(KeywordToken.ID)
+    expect(tokens.at(4, 6).name).toBe(KeywordToken.ID)
     expect(tokens.at(4, 6).value).toBe('def')
   })
 
@@ -38,9 +38,9 @@ describe('A TokenBuilder', () => {
 
     let tokens = builder.buildFromString(code)
 
-    expect(tokens.at(2, 6).name).toBe(KeywordParser.ID)
+    expect(tokens.at(2, 6).name).toBe(KeywordToken.ID)
     expect(tokens.at(2, 6).value).toBe('type')
-    expect(tokens.at(6, 6).name).toBe(KeywordParser.ID)
+    expect(tokens.at(6, 6).name).toBe(KeywordToken.ID)
     expect(tokens.at(6, 6).value).toBe('interface')
   })
 })

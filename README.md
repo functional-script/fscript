@@ -20,7 +20,7 @@ keyword because fscript is made to be **immutable**.
 
 ```coffee
 # Declare a constant
-def surname = "Jonny"
+surname = "Jonny"
 
 # Declare a number
 def age : Number = 30
@@ -240,29 +240,38 @@ keyword
 
 ```coffee
 # No comma are needed if multiline
-type User = {
+type User
   username : String
   password : String
-}
-
-# Same for interfaces
-interface User {
-  username : String
-}
 
 # You can also easily sign functions
-type Greatable = User & {
+type Greatable
+  ...User
   # Here Void stands for "no argument"
   greating : Void -> String
-}
 
 # Like typescript you can type functions
 # and add polymorphic signature by simply
 # using parenthesis
-type Add = {
+type Add
   (Number -> Number -> Number)
+
   ((Number, Number) -> Number)
-}
+
+  toString : Void -> String
+
+type Console
+  log : Void -> Void
+
+  warn : Void -> Void
+
+  error : Void -> Void
+
+type Something
+  | Console
+  | User
+
+def console : Console = window.console
 ```
 
 ### Generics
@@ -273,17 +282,16 @@ some differences
 ```coffee
 # Generics are in lowercase. Here
 # a is a generic of any type
-type Collection a = {
+type Collection a
   find : String -> Collection(a)
+
   # parenthesis are optional
   all : Void -> Collection a
-}
 
 # It's also possible to specify a type
 # wich generics must extends of
-type Identifiable (User a) = {
-  getSubject : Void -> User
-}
+type Identifiable User a
+  getSubject : Void -> a
 
 # Generics can also be declared into functions.
 # They are declare just before the signature and
@@ -292,9 +300,8 @@ def add : a. a -> a -> a
   x y => x + y
 
 # Extends also works there
-type Lengthwise = {
+type Lengthwise
   length : Number
-}
 
 # No need of parenthesis when using function
 # signature and generic extension
@@ -317,26 +324,22 @@ get 'firstname' user # "john"
 # call (same syntax as typescript)
 get<TypeOf user, 'firstname', String> user, 'firstname'
 
-type Collection = {
+type Collection
   [String] : Number
-}
 
-type User = {
+type User
   firstname : String
+
   lastname : String
-}
 
-type Test (KeyOf User) a = {
+type Test (KeyOf User) a
   [a] : Boolean
-}
 
-type Test = {
+type Test
   [`get${UpFirst KeyOf User}` a. a] : Boolean
-}
 
-type Test a = {
+type Test a
   [`get${UpFirst KeyOf a}`] : Boolean
-}
 
 def keys : Test User = {
   getFirstname: true
