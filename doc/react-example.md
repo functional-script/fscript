@@ -62,23 +62,28 @@ export def LoginForm : LoginFormProps -> React.ReactNode
     form to some API
     """
     def send : React.SyntheticEvent -> Promise Void
-      | ?.preventDefault()
-      | () => fetch
-        process.env.LOGIN_API_URL
-        {
-          method: "post"
-          headers: { "Content-Type": "application/json" }
-          body: JSON.strinfify { email, password }
-        }
-      |then response =>
-        if reponse.status is 200 then
-          response.json()
-        else
-          throw response.json()
-      |then { token } =>
-        console.warn `Get back a token ! ${token}`
-      |catch { message } =>
-        setErrors [ message ]
+      ev =>
+        ev.preventDefault()
+
+        def response : Fetch.Response
+          await fetch process.env.LOGIN_API_URL {
+            method: "post"
+            headers: {
+              "Content-Type": "application/json"
+            }
+            body: JSON.stringify { email, password }
+          }
+
+        if response.status is not 201 then
+          def { message } : { message : String }
+            await response.json()
+
+          return setErrors [ message ]
+
+        def { token } : { token : String }
+          await response.json()
+
+        console.log `The user has been logged in with a token ! (${token})`
 
     """
     Now we can return some JSX using jspub syntax for example
