@@ -74,7 +74,7 @@ export def LoginForm : LoginFormProps -> React.ReactNode
             body: JSON.stringify { email, password }
           }
 
-        if response.status is not 201 then
+        if response.status is not 201
           def { message } : { message : String }
             await response.json()
 
@@ -88,13 +88,13 @@ export def LoginForm : LoginFormProps -> React.ReactNode
     """
     Now we can return some JSX using jspub syntax for example
     """
-    jspug`
+    pug`
       form(
         method="post"
         action={process.env.LOGIN_URL}
         onSubmit={send}
       )
-        div(class="form-control")
+        div.form-control
           input(
             type="email"
             id="email"
@@ -102,25 +102,19 @@ export def LoginForm : LoginFormProps -> React.ReactNode
             placeholder="your.email@mail.com"
             onChange={changeField "email"}
           )
-          label(
-            for="email"
-          )
-            Your email:
+          label(for="email") Your email:
 
-        div(class="form-control")
+        div.form-control
           input(
             type="password"
             id="password"
             value={password}
             onChange={changeField "password"}
           )
-          label(
-            for="password"
-          )
-            Your password:
+          label(for="password") Your password:
 
-        div(class="form-control")
-          button(type="submit", class="btn btn-primary")
+        div.form-control
+          button.btn.btn-primary(type="submit")
             Login
     `
 
