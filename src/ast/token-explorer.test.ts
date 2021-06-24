@@ -1,4 +1,4 @@
-import { TokenExplorer } from './explorer'
+import { TokenExplorer } from './token-explorer'
 import {
   KeywordToken,
   SpaceToken,
@@ -11,10 +11,9 @@ import {
 
 describe('A token explorer', () => {
   let code = `def add : Number -> Number -> Number = x y => x + y`
-  let tokenList = TokenBuilder.createDefault().buildFromString(code)
-  let explorer = new TokenExplorer(tokenList)
+  let explorer = new TokenExplorer(TokenBuilder.build(code))
   let emptyExplorer = new TokenExplorer(
-    TokenBuilder.createDefault().buildFromString(`
+    TokenBuilder.build(`
   
   
          
@@ -28,7 +27,7 @@ describe('A token explorer', () => {
   )
 
   beforeEach(() => {
-    explorer = new TokenExplorer(tokenList)
+    explorer = new TokenExplorer(TokenBuilder.build(code))
   })
 
   it('contains a cursor with the current token', () => {

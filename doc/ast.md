@@ -24,10 +24,11 @@ children:
               - { type: TYPE_ID, value: Number }
               - { type: TYPE_ID, value: Number }
           - type: FUNCTION
-            arguments:
-              - { type: ID, value: x }
-              - { type: ID, value: y }
             children:
+              - type: FUNCTION_ARGUMENTS
+                children:
+                  - { type: ARG, value: x }
+                  - { type: ARG, value: y }
               - type: BLOCK
                 children:
                   - type: OPERATION
@@ -48,7 +49,7 @@ children:
           - { type: ID, value: add }
           - { type: NUMBER_LITERAL, value: 3 }
           - { type: NUMBER_LITERAL, value: 4 }
-          - { type: END_CHAIN, call: false }
+          - { type: END_CHAIN }
   - type: EXPORT
     children:
       - { type: ID, value: x }

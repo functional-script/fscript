@@ -1,5 +1,5 @@
 import { AstNodeBuilder, Node } from '../types'
-import { TokenExplorer } from '../explorer'
+import { TokenExplorer } from '../token-explorer'
 import {
   IdentifierToken,
   KeywordToken,
@@ -8,10 +8,20 @@ import {
   IndentToken,
 } from '../../tokens/parsers'
 
+/**
+ * This is the keywords that can be used in order to assign
+ * a member to a value
+ */
 export const ASSIGNEMENT_KEYWORDS = ['def', 'let', 'const', 'var']
 
+/**
+ * The same but this time as a keyword
+ */
 export type AssignementKeyword = typeof ASSIGNEMENT_KEYWORDS[number]
 
+/**
+ * This is the shape of an AssignementNode
+ */
 export type AssignementNode = Node & {
   keyword: AssignementKeyword
   identifier: string

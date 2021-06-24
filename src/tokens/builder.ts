@@ -22,6 +22,13 @@ export class TokenBuilder {
   private parsers: TokenParser[]
 
   /**
+   * Build a given code into an TokenList
+   */
+  public static build(code: string): TokenList {
+    return TokenBuilder.createDefault().buildFromString(code)
+  }
+
+  /**
    * Create a token builder on top of default parsers
    */
   public static createDefault(): TokenBuilder {
