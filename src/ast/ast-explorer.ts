@@ -430,4 +430,29 @@ export class AstExplorer {
 
     return this
   }
+
+  /**
+   * Add a node into the children of the given node
+   */
+  public add(node: Node, start: boolean = true): this {
+    if (start) {
+      this.save('__add_node')
+    }
+
+    this.currentNode.children = [...(this.currentNode?.children || []), node]
+
+    if (this.isRoot) {
+      this.ast = { ...this.currentNode }
+
+      this.load('__add_node')
+
+      delete this.history['__add_node']
+
+      return this
+    }
+
+    this.back()
+
+    return this.add(this.currentNode, false)
+  }
 }

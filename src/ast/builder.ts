@@ -1,5 +1,12 @@
 import { AstNodeBuilder, Node } from './types'
 import { TokenExplorer } from '../tokens/token-explorer'
+import { NextNodeError, SyntaxError } from './errors'
+import { AstExplorer } from './ast-explorer'
+
+export const ROOT_NODE: Node = {
+  type: 'ROOT',
+  children: [],
+}
 
 /**
  * This contains the ability to build an AST
@@ -8,44 +15,22 @@ import { TokenExplorer } from '../tokens/token-explorer'
 export class AstBuilder {
   private builders: AstNodeBuilder[]
 
-  constructor(builders: AstNodeBuilder[] = []) {
+  private ast: AstExplorer
+
+  constructor(builders: AstNodeBuilder[] = [], ast?: AstExplorer) {
     this.builders = []
 
     for (let builder of builders) {
       this.register(builder)
     }
-  }
 
-  public has(name: string): boolean {
-    return this.builders.map(builder => builder.name).includes(name)
-  }
-
-  public get(name: string): AstNodeBuilder {
-    let builder = this.builders.find(builder => builder.name)
-
-    if (!builder) throw new RangeError(`Undefined AST node builder ${name}`)
-
-    return builder
-  }
-
-  public find(names: string[]): AstNodeBuilder[] {
-    if (0 === names.length) {
-      return this.builders
-    }
-
-    let builders: AstNodeBuilder[] = []
-
-    for (let name of names) {
-      this.builders.push(this.get(name))
-    }
-
-    return builders
+    this.ast = ast ?? new AstExplorer(ROOT_NODE)
   }
 
   public register(builder: AstNodeBuilder): this {
-    if (this.has(builder.name)) {
-      throw new RangeError(
-        `The builder ${builder.name} has already been registered`,
+    if (undefined !== this.builders.find(b => b.name === builder.name)) {
+      throw new Error(
+        `There is already a builder named ${builder.name} registered inside the AST Builder`,
       )
     }
 
@@ -55,8 +40,6 @@ export class AstBuilder {
   }
 
   public build(explorer: TokenExplorer, nodes: Node[] = []): Node[] {
-    let lastError: Error | null = null
-
     if (explorer.isEmpty()) {
       return nodes
     }
@@ -64,23 +47,24 @@ export class AstBuilder {
     for (let builder of this.builders) {
       try {
         let node = {
-          ...builder.build(explorer),
+          ...builder.build(explorer, this.ast),
           children: builder
-            .next(explorer)
-            .reduce((root, builder) => root.register(builder), new AstBuilder())
+            .next(explorer, this.ast)
+            .reduce(
+              (root, builder) => root.register(builder),
+              new AstBuilder([], this.ast),
+            )
             .build(explorer, []),
         }
 
         return this.build(explorer, [...nodes, node])
       } catch (e) {
-        lastError = e
+        if (e instanceof NextNodeError) {
+          continue
+        }
 
-        continue
+        throw e
       }
-    }
-
-    if (lastError && nodes.length === 0) {
-      throw lastError
     }
 
     return nodes

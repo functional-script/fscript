@@ -13,7 +13,7 @@ export class TokenError extends Error {
 
     super(message)
 
-    this.name = 'TokenError'
+    this.name = 'FScript(TokenError)'
     this.message = message
     this.subject = subject
     this.position = position

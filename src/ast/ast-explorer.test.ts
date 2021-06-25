@@ -148,4 +148,17 @@ describe('An AST tree explorer', () => {
 
     expect(explorer.cursor).toBe('bar.0.0')
   })
+
+  it('can add a node to the given children of the current node', () => {
+    explorer.go('bar.baz')
+
+    explorer.add({ type: 'customNode' })
+
+    expect(explorer.cursor).toBe('bar.baz')
+    expect(explorer.has('customNode')).toBe(true)
+
+    explorer.root()
+
+    expect(explorer.has('bar.baz.customNode')).toBe(true)
+  })
 })

@@ -1,4 +1,5 @@
 import { TokenExplorer } from '../tokens/token-explorer'
+import { AstExplorer } from './ast-explorer'
 
 /**
  * Define the shape of an AST leaf
@@ -14,7 +15,7 @@ export type Node = {
 export type AstNodeBuilder = {
   readonly name: string
 
-  build(explorer: TokenExplorer): Node
+  build(explorer: TokenExplorer, ast: AstExplorer): Node
 
-  next(explorer: TokenExplorer): AstNodeBuilder[]
+  next(explorer: TokenExplorer, ast: AstExplorer): AstNodeBuilder[]
 }
