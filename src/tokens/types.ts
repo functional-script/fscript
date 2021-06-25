@@ -1,5 +1,4 @@
 import { TokenList } from './list'
-import { CompilerOptions } from '../options'
 
 /**
  * Represent the shape of a Token
