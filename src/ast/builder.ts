@@ -1,6 +1,5 @@
 import { AstNodeBuilder, Node } from './types'
-import { TokenExplorer } from './token-explorer'
-import { TokenList } from '../tokens/list'
+import { TokenExplorer } from '../tokens/token-explorer'
 
 /**
  * This contains the ability to build an AST

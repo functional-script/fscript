@@ -13,6 +13,7 @@ import {
   KeywordToken,
   SeparatorToken,
 } from './parsers'
+import { CompilerOptions, DEFAULT_COMPILER_OPTIONS } from '../options'
 
 /**
  * This class allows you to build a token list on top
@@ -24,26 +25,31 @@ export class TokenBuilder {
   /**
    * Build a given code into an TokenList
    */
-  public static build(code: string): TokenList {
-    return TokenBuilder.createDefault().buildFromString(code)
+  public static build(
+    code: string,
+    options: CompilerOptions = DEFAULT_COMPILER_OPTIONS,
+  ): TokenList {
+    return TokenBuilder.createDefault(options).buildFromString(code)
   }
 
   /**
    * Create a token builder on top of default parsers
    */
-  public static createDefault(): TokenBuilder {
+  public static createDefault(
+    options: CompilerOptions = DEFAULT_COMPILER_OPTIONS,
+  ): TokenBuilder {
     return new TokenBuilder([
-      new NewLineToken(),
-      new IndentToken(),
-      new SpaceToken(),
-      new KeywordToken(),
-      new SeparatorToken(),
-      new OperatorToken(),
-      new IdentifierToken(),
-      new LiteralToken(),
-      new GroupToken(),
-      new ArrayToken(),
-      new BlockToken(),
+      new NewLineToken(options),
+      new IndentToken(options),
+      new SpaceToken(options),
+      new KeywordToken(options),
+      new SeparatorToken(options),
+      new OperatorToken(options),
+      new IdentifierToken(options),
+      new LiteralToken(options),
+      new GroupToken(options),
+      new ArrayToken(options),
+      new BlockToken(options),
     ])
   }
 

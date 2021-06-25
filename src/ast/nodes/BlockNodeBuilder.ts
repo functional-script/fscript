@@ -1,5 +1,5 @@
 import { AstNodeBuilder, Node } from '../types'
-import { TokenExplorer } from '../token-explorer'
+import { TokenExplorer } from '../../tokens/token-explorer'
 import { AssignementNodeBuilder } from './AssignementNodeBuilder'
 
 /**

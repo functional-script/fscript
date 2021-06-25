@@ -1,5 +1,5 @@
 import { AstNodeBuilder, Node } from '../types'
-import { TokenExplorer } from '../token-explorer'
+import { TokenExplorer } from '../../tokens/token-explorer'
 import {
   IdentifierToken,
   KeywordToken,
@@ -18,6 +18,17 @@ export const ASSIGNEMENT_KEYWORDS = ['def', 'let', 'const', 'var']
  * The same but this time as a keyword
  */
 export type AssignementKeyword = typeof ASSIGNEMENT_KEYWORDS[number]
+
+/**
+ * Contains the kind of assignement, like a single lined
+ * one or a multiline
+ *
+ * single line : def x : Number = 10
+ * multi line :
+ *  def x : Number
+ *    10
+ */
+export type AssignementKind = 'SINGLE_LINE' | 'MULTI_LINE'
 
 /**
  * This is the shape of an AssignementNode

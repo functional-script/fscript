@@ -1,4 +1,4 @@
-import { TokenExplorer } from './token-explorer'
+import { TokenExplorer } from '../tokens/token-explorer'
 
 /**
  * Define the shape of an AST leaf

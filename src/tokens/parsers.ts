@@ -1,11 +1,14 @@
 import { TokenParser, Token } from './types'
 import { TokenList } from './list'
 import { TokenError } from './error'
+import { CompilerOptions } from '../options'
 
 /**
  * Allows to parse a new line token
  */
 export class NewLineToken implements TokenParser {
+  constructor(options: CompilerOptions) {}
+
   get re(): RegExp {
     return /^(\r|\n)/
   }
@@ -58,22 +61,42 @@ export class NewLineToken implements TokenParser {
  * Allow to parse an indentation
  */
 export class IndentToken implements TokenParser {
+  private kind: CompilerOptions['indentKind']
+  private size: CompilerOptions['indentSize']
+
+  constructor(options: CompilerOptions) {
+    this.kind = options.indentKind
+    this.size = options.indentSize
+  }
+
   static get ID(): string {
     return 'INDENT'
   }
 
   public supports(code: string, list: TokenList): boolean {
+    let re =
+      this.kind === 'space'
+        ? new RegExp(`^${' '.repeat(this.size)}`)
+        : new RegExp('^\t')
     let lastToken = list.hasLast ? list.last : null
 
     if (!lastToken) {
-      return /^ /.test(code) && list.length === 0
+      return re.test(code) && list.length === 0
     }
 
-    return /^ /.test(code) && lastToken.name === NewLineToken.ID
+    return (
+      re.test(code) &&
+      (lastToken.name === NewLineToken.ID || lastToken.name === IndentToken.ID)
+    )
   }
 
   public parse(code: string, list: TokenList): Token {
-    let match = code.match(/^ +/)
+    let re =
+      this.kind === 'space'
+        ? new RegExp(`^${' '.repeat(this.size)}`)
+        : new RegExp('^\t')
+
+    let match = code.match(re)
     let position = list.calculateNextPostion(match ? match[0] : { length: 0 })
 
     if (!match) {
@@ -89,7 +112,12 @@ export class IndentToken implements TokenParser {
   }
 
   public substract(code: string): string {
-    return code.replace(/^ +/, '')
+    let re =
+      this.kind === 'space'
+        ? new RegExp(`^${' '.repeat(this.size)}`)
+        : new RegExp('^\t')
+
+    return code.replace(re, '')
   }
 }
 
@@ -97,6 +125,8 @@ export class IndentToken implements TokenParser {
  * Allows to parse spaces
  */
 export class SpaceToken implements TokenParser {
+  constructor(options: CompilerOptions) {}
+
   static get ID(): string {
     return 'SPACE'
   }
@@ -130,6 +160,8 @@ export class SpaceToken implements TokenParser {
  * Parse an fscript keyword
  */
 export class KeywordToken implements TokenParser {
+  constructor(options: CompilerOptions) {}
+
   static get ID(): string {
     return 'KEYWORD'
   }
@@ -166,6 +198,8 @@ export class KeywordToken implements TokenParser {
  * Parse an fscript separator
  */
 export class SeparatorToken implements TokenParser {
+  constructor(options: CompilerOptions) {}
+
   static get ID(): string {
     return 'SEPARATOR'
   }
@@ -201,6 +235,8 @@ export class SeparatorToken implements TokenParser {
  * Parse any fscript operator
  */
 export class OperatorToken implements TokenParser {
+  constructor(options: CompilerOptions) {}
+
   static get ID(): string {
     return 'OPERATOR'
   }
@@ -237,6 +273,8 @@ export class OperatorToken implements TokenParser {
  * Parse an fscript identifier
  */
 export class IdentifierToken implements TokenParser {
+  constructor(options: CompilerOptions) {}
+
   static get ID(): string {
     return 'IDENTIFIER'
   }
@@ -272,6 +310,8 @@ export class IdentifierToken implements TokenParser {
  * Parse an fscript literral
  */
 export class LiteralToken implements TokenParser {
+  constructor(options: CompilerOptions) {}
+
   static get ID(): string {
     return 'LITTERAL'
   }
@@ -308,6 +348,8 @@ export class LiteralToken implements TokenParser {
  * Parse an fscript group using parenthesis
  */
 export class GroupToken implements TokenParser {
+  constructor(options: CompilerOptions) {}
+
   static get ID_START(): string {
     return 'GROUP_START'
   }
@@ -352,6 +394,8 @@ export class GroupToken implements TokenParser {
  * "{}"
  */
 export class BlockToken implements TokenParser {
+  constructor(options: CompilerOptions) {}
+
   static get ID_START(): string {
     return 'BLOCK_START'
   }
@@ -395,6 +439,8 @@ export class BlockToken implements TokenParser {
  * Parse array bracket syntax "[]"
  */
 export class ArrayToken implements TokenParser {
+  constructor(options: CompilerOptions) {}
+
   static get ID_START(): string {
     return 'ARRAY_START'
   }

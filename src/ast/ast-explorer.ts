@@ -7,7 +7,7 @@ import { Node } from './types'
  * like "somenode:4.someothernode:0" wich means : the node
  * of type "somenode" number 4 followed by the first node "someothernode"
  */
-export type AstCursor = String
+export type AstCursor = string
 
 /**
  * Represent a given named path
@@ -44,7 +44,7 @@ export class AstExplorer {
 
   private currentNode: Node
 
-  private registeredPath: AstCursor | null
+  private history: { [key: string]: AstCursor }
 
   /**
    * Parse a given cursor into an ast path collection
@@ -147,7 +147,7 @@ export class AstExplorer {
     this.path = ''
     this.composedPath = []
     this.currentNode = this.ast
-    this.registeredPath = null
+    this.history = {}
   }
 
   /**
@@ -271,8 +271,8 @@ export class AstExplorer {
   /**
    * Save the current path to be restore later on
    */
-  public save(): this {
-    this.registeredPath = this.path
+  public save(key: string): this {
+    this.history[key] = this.cursor
 
     return this
   }
@@ -280,16 +280,32 @@ export class AstExplorer {
   /**
    * Restore the saved path
    */
-  public restore(): this {
-    if (null === this.registeredPath) {
-      throw new Error(`There is no saved path. Maybe you forget to call save ?`)
+  public load(key: string): this {
+    if (!this.history[key]) {
+      throw new RangeError(`There is no AST cursor named ${key} in the history`)
     }
 
     this.root()
 
-    this.go(this.registeredPath)
+    this.go(this.history[key])
 
-    this.registeredPath = null
+    return this
+  }
+
+  /**
+   * Restore to the first cursor in the history and clear
+   * the history
+   */
+  public reset(): this {
+    let keys = Object.keys(this.history)
+
+    if (keys.length === 0) {
+      return this
+    }
+
+    this.load(this.history[keys[0]])
+
+    this.history = {}
 
     return this
   }
@@ -300,11 +316,13 @@ export class AstExplorer {
    */
   public hasPrevious(type: string, start: boolean = true): boolean {
     if (start) {
-      this.save()
+      this.save('__previous')
     }
 
     if (this.isRoot) {
-      this.restore()
+      this.load('__previous')
+
+      delete this.history['__previous']
 
       return false
     }
@@ -312,7 +330,9 @@ export class AstExplorer {
     this.back()
 
     if (this.node.type === type) {
-      this.restore()
+      this.load('__previous')
+
+      delete this.history['__previous']
 
       return true
     }

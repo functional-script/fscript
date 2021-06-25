@@ -114,7 +114,7 @@ describe('An AST tree explorer', () => {
   it('can save a cursor and go back to that cursor later on', () => {
     explorer.go('bar.baz')
 
-    explorer.save()
+    explorer.save('test')
 
     expect(explorer.node.type).toBe('baz')
 
@@ -122,7 +122,7 @@ describe('An AST tree explorer', () => {
 
     expect(explorer.node.type).toBe('foo')
 
-    explorer.restore()
+    explorer.load('test')
 
     expect(explorer.node.type).toBe('baz')
   })

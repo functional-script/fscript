@@ -7,27 +7,32 @@ import {
   ArrayToken,
   GroupToken,
   TokenBuilder,
-} from '../tokens'
+} from '.'
 
 describe('A token explorer', () => {
   let code = `def add : Number -> Number -> Number = x y => x + y`
-  let explorer = new TokenExplorer(TokenBuilder.build(code))
-  let emptyExplorer = new TokenExplorer(
-    TokenBuilder.build(`
-  
-  
-         
-  
+  let indentCode = `
+    console.log "test"
 
+console.log "foo"
+  `
+  let emptyCode = `
   
   
   
+          
   
-  `),
-  )
+  
+  
+`
+  let explorer: TokenExplorer,
+    indentExplorer: TokenExplorer,
+    emptyExplorer: TokenExplorer
 
   beforeEach(() => {
     explorer = new TokenExplorer(TokenBuilder.build(code))
+    indentExplorer = new TokenExplorer(TokenBuilder.build(indentCode))
+    emptyExplorer = new TokenExplorer(TokenBuilder.build(emptyCode))
   })
 
   it('contains a cursor with the current token', () => {
@@ -68,9 +73,6 @@ describe('A token explorer', () => {
 
     expect(explorer.token.name).toBe(KeywordToken.ID)
     expect(explorer.token.value).toBe('def')
-
-    expect(explorer.lastToken.name).toBe(OperatorToken.ID)
-    expect(explorer.lastToken.value).toBe(':')
   })
 
   it('can test the existence of previous or next token', () => {
@@ -114,5 +116,50 @@ describe('A token explorer', () => {
   it('can detects if the explorer contains only empty tokens', () => {
     expect(emptyExplorer.isEmpty()).toBe(true)
     expect(explorer.isEmpty()).toBe(false)
+  })
+
+  it('can detect the current indent level', () => {
+    expect(indentExplorer.indentLevel).toBe(0)
+
+    indentExplorer.next([IdentifierToken])
+
+    expect(indentExplorer.indentLevel).toBe(2)
+
+    indentExplorer.next([IdentifierToken])
+    indentExplorer.next([IdentifierToken])
+
+    expect(indentExplorer.indentLevel).toBe(0)
+  })
+
+  it('can save, load an reset positions', () => {
+    indentExplorer.next([IdentifierToken])
+    indentExplorer.next([IdentifierToken])
+
+    indentExplorer.save('a')
+
+    expect(indentExplorer.token.value).toBe('log')
+    expect(indentExplorer.indentLevel).toBe(2)
+
+    indentExplorer.next([IdentifierToken])
+
+    indentExplorer.save('b')
+
+    expect(indentExplorer.token.value).toBe('console')
+    expect(indentExplorer.indentLevel).toBe(0)
+
+    indentExplorer.load('a')
+
+    expect(indentExplorer.token.value).toBe('log')
+    expect(indentExplorer.indentLevel).toBe(2)
+
+    indentExplorer.load('b')
+
+    expect(indentExplorer.token.value).toBe('console')
+    expect(indentExplorer.indentLevel).toBe(0)
+
+    indentExplorer.reset()
+
+    expect(indentExplorer.token.value).toBe('log')
+    expect(indentExplorer.indentLevel).toBe(2)
   })
 })
