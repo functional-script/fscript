@@ -1,0 +1,3 @@
+language: node_ja
+node_js:
+  - lts/*
