@@ -1,4 +1,4 @@
-# FScript [![travis status](https://travis-ci.com/functional-script/fscript.svg?token=pzmxhVJ66YPJNpcBzfcR&branch=master)](https://travis-ci.com/functional-script/fscript.svg?token=pzmxhVJ66YPJNpcBzfcR&branch=master)
+# FScript [![CircleCI](https://circleci.com/gh/functional-script/fscript/tree/master.svg?style=svg)](https://circleci.com/gh/functional-script/fscript/tree/master)
 
 FScript (Functional Script) is a programming langage inspired
 by the ML familly wich compiles to JavaScript or TypeScript.
