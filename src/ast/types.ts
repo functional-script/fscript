@@ -15,7 +15,17 @@ export type Node = {
 export type AstNodeBuilder = {
   readonly name: string
 
+  supports(explorer: TokenExplorer, ast: AstExplorer): boolean
+
   build(explorer: TokenExplorer, ast: AstExplorer): Node
 
   next(explorer: TokenExplorer, ast: AstExplorer): AstNodeBuilder[]
+}
+
+/**
+ * This is the shape of a ROOT_NODE into an AST
+ */
+export const ROOT_NODE: Node = {
+  type: 'ROOT',
+  children: [],
 }

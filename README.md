@@ -23,13 +23,13 @@ keyword because fscript is made to be **immutable**.
 surname = "Jonny"
 
 # Declare a number
-def age : Number = 30
+def age :: Number = 30
 
 # Declare a string
-def name : String = "John"
+def name :: String = "John"
 
 # Declare a boolean
-def isMajor : Boolean = true
+def isMajor :: Boolean = true
 ```
 
 Wich compiles to
@@ -49,11 +49,11 @@ syntax:
 
 ```coffee
 # Declare an array of number
-def notes : [Number] = [ 12, 13, 14, 19 ]
+def notes :: [Number] = [ 12, 13, 14, 19 ]
 
 # Declare an array of string using the
 # generic syntax
-def students : Array String = [ "john", "Elly", "Jane" ]
+def students :: Array String = [ "john", "Elly", "Jane" ]
 
 # Create an objet
 def john = { firstname: "John",  lastname: "Doe" }
@@ -127,7 +127,7 @@ Let's take a tour of basic function definitions:
 
 ```coffee
 # A basic hello function
-def hello : String -> String = name => `Hello ${name}`
+def hello :: String -> String = name => `Hello ${name}`
 
 # Calling the hello function. Parenthesis arn't
 # needed !
@@ -144,7 +144,7 @@ console.log hello "John"
 # multiline syntax. Note the the "=" sign is not
 # needed, tabulation replaced it.
 # Return values are automatically returned !
-def add : Number -> Number -> Number
+def add :: Number -> Number -> Number
   x y => x + y
 
 add(3, 4)
@@ -154,54 +154,54 @@ add 3, 4
 add 3 4
 
 # Function are automatically curried
-def add3 : Number -> Number = add 3
+def add3 :: Number -> Number = add 3
 
 # Or with the multine syntax
-def add3 : Number -> Number
+def add3 :: Number -> Number
   add 3
 
-def x : Number = add3 5
+def x :: Number = add3 5
 
-def y : Number = add 3, 5
+def y :: Number = add 3, 5
 
-def y2 : Number = add 3 5
+def y2 :: Number = add 3 5
 
 console.log x, y
 
 # You can also make function returning nothing
 # using the "Void" type
-def log : String -> Void
+def log :: String -> Void
   member =>
     console.log member
     10
 
 # Finally, if you want fscript to force uncurried
 # function you can use parenthesis into your signature
-def uncurriedAdd : (Number, Number) -> Number
+def uncurriedAdd :: (Number, Number) -> Number
   x y => x + y
 
 # Async function are automatically detected when
 # returning Promise !
-def promise : Promise String = Promise.resolve "test"
+def promise :: Promise String = Promise.resolve "test"
 
-def helloPromise : Promise String -> Promise String
+def helloPromise :: Promise String -> Promise String
   p =>
     def name = await p
     `Hello ${name.toUpperCase()}`
 
-def f : Promise String -> Promise String
+def f :: Promise String -> Promise String
   (await name) => name.toUpperCase()
 
-def g : Promise String -> Promise String
+def g :: Promise String -> Promise String
   (await name) => name.replace /John/g "Jean"
 
-def t : Promise String -> Promise String
+def t :: Promise String -> Promise String
   (await name) => name.replace /Doe/g "Dupont"
 
-def foo : Promise String -> Promise String
+def foo :: Promise String -> Promise String
   g >> t >> f
 
-def foo2 : Promise String -> Promise String
+def foo2 :: Promise String -> Promise String
   (await name) =>
     name
     |> n => n.replace /John/g "Jean"
@@ -218,7 +218,7 @@ In fscript any function introduce a powerfull pattern
 matching system :
 
 ```coffee
-def greatings : String -> String
+def greatings :: String -> String
   "John" => "Hey John !"
   "Jane" => "Greatings dear Jane"
   otherName => `Hello ${otherName}`
@@ -226,7 +226,7 @@ def greatings : String -> String
 # You can also add special conditions into
 # your pattern matching using the "|" character
 # wich acts like a where !
-def specialAdd : Number -> Number -> Number
+def specialAdd :: Number -> Number -> Number
   x y | x > 10 and y < 9 =>
     (x + 10) + (y * 20)
   x y => x + y
@@ -240,38 +240,41 @@ keyword
 
 ```coffee
 # No comma are needed if multiline
-type User
-  username : String
-  password : String
+type User = {
+  username :: String
+  password :: String
+}
 
 # You can also easily sign functions
-type Greatable
-  ...User
+type Greatable = User & {
   # Here Void stands for "no argument"
-  greating : Void -> String
+  greating :: Void -> String
+}
 
 # Like typescript you can type functions
 # and add polymorphic signature by simply
 # using parenthesis
-type Add
+type Add = {
   (Number -> Number -> Number)
 
   ((Number, Number) -> Number)
 
-  toString : Void -> String
+  toString :: Void -> String
+}
 
-type Console
-  log : Void -> Void
+type Console = {
+  log :: Void -> Void
 
-  warn : Void -> Void
+  warn :: Void -> Void
 
-  error : Void -> Void
+  error :: Void -> Void
+}
 
-type Something
+type Something =
   | Console
   | User
 
-def console : Console = window.console
+def console :: Console = window.console
 ```
 
 ### Generics
@@ -282,37 +285,40 @@ some differences
 ```coffee
 # Generics are in lowercase. Here
 # a is a generic of any type
-type Collection a
-  find : String -> Collection(a)
+type Collection a = {
+  find :: String -> Collection(a)
 
   # parenthesis are optional
-  all : Void -> Collection a
+  all :: Void -> Collection a
+}
 
 # It's also possible to specify a type
 # wich generics must extends of
-type Identifiable User a
-  getSubject : Void -> a
+type Identifiable User a = {
+  getSubject :: Void -> a
+}
 
 # Generics can also be declared into functions.
 # They are declare just before the signature and
 # separed by a "."
-def add : a. a -> a -> a
+def add :: a. a -> a -> a
   x y => x + y
 
 # Extends also works there
-type Lengthwise
-  length : Number
+type Lengthwise = {
+  length :: Number
+}
 
 # No need of parenthesis when using function
 # signature and generic extension
-def length : Lengthwise a. a -> Number
+def length :: Lengthwise a . a -> Number
   subject => subject.length
 
 # You can also use the "KeyOf" special type
 def get
-  : Object subject
-  , (KeyOf subject) key
-  , data
+  :: Object subject
+  . (KeyOf subject) key
+  . data
   . key -> subject -> data
   = key subject => subject[key]
 
@@ -324,24 +330,29 @@ get 'firstname' user # "john"
 # call (same syntax as typescript)
 get<TypeOf user, 'firstname', String> user, 'firstname'
 
-type Collection
-  [String] : Number
+type Collection = {
+  [String] :: Number
+}
 
-type User
-  firstname : String
+type User = {
+  firstname :: String
 
-  lastname : String
+  lastname :: String
+}
 
-type Test (KeyOf User) a
-  [a] : Boolean
+type Test (KeyOf User) a = {
+  [a] :: Boolean
+}
 
-type Test
-  [`get${UpFirst KeyOf User}` a. a] : Boolean
+type Test = {
+  [`get${UpFirst KeyOf User}` a. a] :: Boolean
+}
 
-type Test a
-  [`get${UpFirst KeyOf a}`] : Boolean
+type Test a = {
+  [`get${UpFirst KeyOf a}`] :: Boolean
+}
 
-def keys : Test User = {
+def keys :: Test User = {
   getFirstname: true
   getLastname: false
 }

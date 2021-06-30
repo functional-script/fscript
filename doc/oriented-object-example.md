@@ -10,20 +10,20 @@ a character in a RPG game with some life
 and more
 """
 export class Character
-  protected name : String
+  protected name :: String
 
-  protected life : Number
+  protected life :: Number
 
-  protected maxLife : Number
+  protected maxLife :: Number
 
-  protected attack : Number
+  protected attack :: Number
 
   """
   Now let's make a bounded constructor using
   the ~> typing operator
   """
   public constructor
-    :  Character
+    :: Character
     ~> String -> Number -> Number -> Character
       @name @maxLife @attack =>
         @life = @maxLife
@@ -31,14 +31,14 @@ export class Character
   """
   Create a special health getter
   """
-  public get health : Character ~> Void -> Number
+  public get health :: Character ~> Void -> Number
     () => @life
 
   """
   Creates a special getter to know if a
   character is dead or not
   """
-  public get dead : Character ~> Void -> Boolean
+  public get dead :: Character ~> Void -> Boolean
     () => @life <= 0
 
   """
@@ -47,20 +47,20 @@ export class Character
   Note that fluent api are automatically detected,
   no need to return "this" (@)
   """
-  public attack : Character ~> Character -> Character
+  public attack :: Character ~> Character -> Character
     victim => victim.life -= @attack
 
   """
   Creates a method wich restore some health
   """
-  public restore : Character ~> Number -> Character
+  public restore :: Character ~> Number -> Character
     health => @life += health
 
   """
   Finally let's create a method that will print the
   character
   """
-  public toString : Character ~> Void -> String
+  public toString :: Character ~> Void -> String
     () => `Character ${@name} (Life: ${@life}, Attack: ${@attack})`
 ```
 
@@ -73,7 +73,7 @@ from Character import { Character }
 """
 This function contains the game
 """
-def main : Void -> Void
+def main :: Void -> Void
   () =>
     def arthur = Character "Arthur" 100 30
     def merlin = Character "Merlin" 70 50

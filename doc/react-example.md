@@ -15,33 +15,33 @@ Let's start building a type wich will contains the
 login form props
 """
 export type LoginFormProps = {
-  email : String
-  password : String
-  errors : [String]
+  email :: String
+  password :: String
+  errors :: [String]
 }
 
 """
 Now let's build the component
 """
-export def LoginForm : LoginFormProps -> React.ReactNode
+export def LoginForm :: LoginFormProps -> React.ReactNode
   { email, password, errors } =>
     """
     Let's create a state that will be used to store
     the email value
     """
-    def [ email, setEmail ] : [ String, String -> Void ]
+    def [ email, setEmail ] :: [ String, String -> Void ]
       useState email
 
     """
     Let's do the same thing for the password
     """
-    def [ password, setPassword ] : [ String, String -> Void ]
+    def [ password, setPassword ] :: [ String, String -> Void ]
       useState password
 
     """
     Finally let's build an errors state
     """
-    def [ errors, setErrors ] : [ [String] : [String] -> Void ]
+    def [ errors, setErrors ] :: [ [String] : [String] -> Void ]
       useState errors
 
     """
@@ -50,7 +50,7 @@ export def LoginForm : LoginFormProps -> React.ReactNode
 
     We can use function pattern matching easily there
     """
-    def changeField : String -> React.FormEvent HTMLInputElement -> Void
+    def changeField :: String -> React.FormEvent HTMLInputElement -> Void
       "email" { currentTarget: { value } } => setEmail value
 
       "password" { currentTarget: { value } } => setPassword value
@@ -61,7 +61,7 @@ export def LoginForm : LoginFormProps -> React.ReactNode
     Let's create now the function that will send the login
     form to some API
     """
-    def send : React.SyntheticEvent -> Promise Void
+    def send :: React.SyntheticEvent -> Promise Void
       ev =>
         ev.preventDefault()
 
@@ -75,12 +75,12 @@ export def LoginForm : LoginFormProps -> React.ReactNode
           }
 
         if response.status is not 201
-          def { message } : { message : String }
+          def { message } :: { message : String }
             await response.json()
 
           return setErrors [ message ]
 
-        def { token } : { token : String }
+        def { token } :: { token : String }
           await response.json()
 
         console.log `The user has been logged in with a token ! (${token})`

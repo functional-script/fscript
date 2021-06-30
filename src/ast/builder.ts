@@ -1,12 +1,6 @@
-import { AstNodeBuilder, Node } from './types'
+import { AstNodeBuilder, Node, ROOT_NODE } from './types'
 import { TokenExplorer } from '../tokens/token-explorer'
-import { NextNodeError, SyntaxError } from './errors'
 import { AstExplorer } from './ast-explorer'
-
-export const ROOT_NODE: Node = {
-  type: 'ROOT',
-  children: [],
-}
 
 /**
  * This contains the ability to build an AST
@@ -45,26 +39,22 @@ export class AstBuilder {
     }
 
     for (let builder of this.builders) {
-      try {
-        let node = {
-          ...builder.build(explorer, this.ast),
-          children: builder
-            .next(explorer, this.ast)
-            .reduce(
-              (root, builder) => root.register(builder),
-              new AstBuilder([], this.ast),
-            )
-            .build(explorer, []),
-        }
-
-        return this.build(explorer, [...nodes, node])
-      } catch (e) {
-        if (e instanceof NextNodeError) {
-          continue
-        }
-
-        throw e
+      if (!builder.supports(explorer, this.ast)) {
+        continue
       }
+
+      let node = {
+        ...builder.build(explorer, this.ast),
+        children: builder
+          .next(explorer, this.ast)
+          .reduce(
+            (root, builder) => root.register(builder),
+            new AstBuilder([], this.ast),
+          )
+          .build(explorer, []),
+      }
+
+      return this.build(explorer, [...nodes, node])
     }
 
     return nodes

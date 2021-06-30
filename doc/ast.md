@@ -1,10 +1,10 @@
 # Example of AST generation
 
 ```coffee
-export def add : Number -> Number -> Number
+export def add :: Number -> Number -> Number
   x y => x + y
 
-def x : Number = add 3 4
+def x :: Number = add 3 4
 
 export x
 ```

@@ -56,3 +56,16 @@ export type DoubleTokenIdentifier = {
 }
 
 export type TokenIdentifier = SimpleTokenIdentifier | DoubleTokenIdentifier
+
+/*
+ * The following section contains all token types in
+ * the language
+ */
+
+// KEYWORDS :
+
+export const KEYWORD_BOOLEAN = ['true', 'false', 'yes', 'no']
+export type KeywordBoolean = typeof KEYWORD_BOOLEAN[number]
+
+export const KEYWORDS = [...KEYWORD_BOOLEAN]
+export type Keywords = typeof KEYWORDS[number]
