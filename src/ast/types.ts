@@ -13,8 +13,6 @@ export type Node = {
  * Define the shape an an Node builder
  */
 export type AstNodeBuilder = {
-  readonly name: string
-
   supports(explorer: TokenExplorer, ast: AstExplorer): boolean
 
   build(explorer: TokenExplorer, ast: AstExplorer): Node

@@ -22,12 +22,6 @@ export class AstBuilder {
   }
 
   public register(builder: AstNodeBuilder): this {
-    if (undefined !== this.builders.find(b => b.name === builder.name)) {
-      throw new Error(
-        `There is already a builder named ${builder.name} registered inside the AST Builder`,
-      )
-    }
-
     this.builders.push(builder)
 
     return this
