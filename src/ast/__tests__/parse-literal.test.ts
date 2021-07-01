@@ -15,6 +15,7 @@ describe('A token builder', () => {
   let code: string = `
 10
 10.56
+.46
 true
 false
 yes
@@ -33,24 +34,30 @@ yes
   })
 
   it('can parse literal nodes', () => {
-    expect(ast.node.children?.length).toBe(8)
+    expect(ast.node.children?.length).toBe(9)
   })
 
   it('can parse integer literal', () => {
     let firstNumber = ast.node.children?.[0] as NumberLiteralNode
     let secondNumber = ast.node.children?.[1] as NumberLiteralNode
+    let thirdNumber = ast.node.children?.[2] as NumberLiteralNode
 
     expect(firstNumber.type).toBe('LITERAL_NUMBER')
     expect(secondNumber.type).toBe('LITERAL_NUMBER')
+    expect(thirdNumber.type).toBe('LITERAL_NUMBER')
     expect(firstNumber.value).toBe(10)
     expect(secondNumber.value).toBe(10.56)
+    expect(thirdNumber.value).toBe(0.46)
+    expect(firstNumber.kind).toBe('integer')
+    expect(secondNumber.kind).toBe('float')
+    expect(thirdNumber.kind).toBe('float')
   })
 
   it('can parse boolean literal', () => {
-    let firstBool = ast.node.children?.[2] as BooleanLiteralNode
-    let secondBool = ast.node.children?.[3] as BooleanLiteralNode
-    let thirdBool = ast.node.children?.[4] as BooleanLiteralNode
-    let fourthBool = ast.node.children?.[5] as BooleanLiteralNode
+    let firstBool = ast.node.children?.[3] as BooleanLiteralNode
+    let secondBool = ast.node.children?.[4] as BooleanLiteralNode
+    let thirdBool = ast.node.children?.[5] as BooleanLiteralNode
+    let fourthBool = ast.node.children?.[6] as BooleanLiteralNode
 
     expect(firstBool.type).toBe('LITERAL_BOOLEAN')
     expect(secondBool.type).toBe('LITERAL_BOOLEAN')
@@ -63,8 +70,8 @@ yes
   })
 
   it('can parse string literal', () => {
-    let firstString = ast.node.children?.[6] as StringLiteralNode
-    let secondString = ast.node.children?.[7] as StringLiteralNode
+    let firstString = ast.node.children?.[7] as StringLiteralNode
+    let secondString = ast.node.children?.[8] as StringLiteralNode
 
     expect(firstString.type).toBe('LITERAL_STRING')
     expect(secondString.type).toBe('LITERAL_STRING')

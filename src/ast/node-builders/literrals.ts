@@ -71,7 +71,7 @@ class NumberLiteralBuilder implements AstNodeBuilder {
   }
 
   private isNumber(value: string | number): boolean {
-    return /^\d+/.test(`${value}`)
+    return /^[0-9.]+/.test(`${value}`)
   }
 
   private isFloat(value: string | number): boolean {
