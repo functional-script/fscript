@@ -8,20 +8,34 @@ import {
   IndentToken,
   NewLineToken,
 } from '../../tokens/parsers'
+import { SyntaxError } from '../errors'
 
+/**
+ * Represent the node of a number lireral
+ */
 export type NumberLiteralNode = Node & {
   value: number
   kind: 'integer' | 'float'
 }
 
+/**
+ * Represent the node of a boolean literal
+ */
 export type BooleanLiteralNode = Node & {
   value: boolean
 }
 
 /**
+ * Represent the node of a string literal
+ */
+export type StringLiteralNode = Node & {
+  value: string
+}
+
+/**
  * This class build a number literal
  */
-export class NumberLiteralBuilder implements AstNodeBuilder {
+class NumberLiteralBuilder implements AstNodeBuilder {
   public readonly name = 'LITERAL_NUMBER'
 
   supports(explorer: TokenExplorer, ast: AstExplorer): boolean {
@@ -51,6 +65,8 @@ export class NumberLiteralBuilder implements AstNodeBuilder {
   }
 
   next(explorer: TokenExplorer, ast: AstExplorer): AstNodeBuilder[] {
+    explorer.next()
+
     return []
   }
 
@@ -66,7 +82,7 @@ export class NumberLiteralBuilder implements AstNodeBuilder {
 /**
  * This build a boolean literal
  */
-export class BooleanLiteralBuilder implements AstNodeBuilder {
+class BooleanLiteralBuilder implements AstNodeBuilder {
   public readonly name = 'LITERAL_BOOLEAN'
 
   supports(explorer: TokenExplorer, ast: AstExplorer): boolean {
@@ -93,6 +109,8 @@ export class BooleanLiteralBuilder implements AstNodeBuilder {
   }
 
   next(explorer: TokenExplorer, ast: AstExplorer): AstNodeBuilder[] {
+    explorer.next()
+
     return []
   }
 
@@ -102,5 +120,93 @@ export class BooleanLiteralBuilder implements AstNodeBuilder {
 
   private getBoolean(value: KeywordBoolean): boolean {
     return 'true' === value || 'yes' === value ? true : false
+  }
+}
+
+/**
+ * This build a single line string literal
+ */
+class StringLiteralBuilder implements AstNodeBuilder {
+  public readonly name = 'LITERAL_STRING'
+
+  supports(explorer: TokenExplorer, ast: AstExplorer): boolean {
+    if (explorer.is(LiteralToken)) {
+      return this.isString(explorer.token.value)
+    }
+
+    if (
+      !explorer.isNext(LiteralToken, [SpaceToken, NewLineToken, IndentToken])
+    ) {
+      return false
+    }
+
+    explorer.next([LiteralToken])
+
+    return this.isString(explorer.token.value)
+  }
+
+  build(explorer: TokenExplorer, ast: AstExplorer): StringLiteralNode {
+    return {
+      type: this.name,
+      value: (explorer.token.value as string)
+        .replace(/^"/, '')
+        .replace(/^'/, '')
+        .replace(/'$/, '')
+        .replace(/"$/, ''),
+    }
+  }
+
+  next(explorer: TokenExplorer, ast: AstExplorer): AstNodeBuilder[] {
+    explorer.next()
+
+    return []
+  }
+
+  private isString(value: string | number): boolean {
+    return /^("[^"]*")|('[^']*')/.test(`${value}`)
+  }
+}
+
+/**
+ * This is the generic literal builder that aggregates
+ * the literal together
+ */
+export class LiteralNodeBuilder implements AstNodeBuilder {
+  private builders: AstNodeBuilder[]
+
+  private selectedBuilder: AstNodeBuilder | undefined
+
+  public readonly name: string = 'LITERAL'
+
+  constructor() {
+    this.builders = [
+      new NumberLiteralBuilder(),
+      new BooleanLiteralBuilder(),
+      new StringLiteralBuilder(),
+    ]
+  }
+
+  supports(explorer: TokenExplorer, ast: AstExplorer): boolean {
+    this.selectedBuilder = this.builders.find(builder =>
+      builder.supports(explorer, ast),
+    )
+
+    return undefined !== this.selectedBuilder
+  }
+
+  build(explorer: TokenExplorer, ast: AstExplorer): Node {
+    if (undefined === this.selectedBuilder) {
+      throw new SyntaxError(explorer.cursor, 'Unable to parse this literal')
+    }
+
+    return this.selectedBuilder.build(explorer, ast)
+  }
+
+  next(explorer: TokenExplorer, ast: AstExplorer): AstNodeBuilder[] {
+    if (undefined === this.selectedBuilder) {
+      throw new SyntaxError(explorer.cursor, 'Unable to parse this literal')
+    }
+
+    return this.selectedBuilder.next(explorer, ast)
   }
 }

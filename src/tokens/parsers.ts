@@ -317,7 +317,7 @@ export class LiteralToken implements TokenParser {
   }
 
   private re =
-    /^(([0-9.]+)|("[^"]*")|('[^']*')|(`[^`]*`)|(true|false|null|void|undefined))/
+    /^(([0-9.]+)|("[^"]*")|('[^']*')|(`[^`]*`)|(true|false|null|void|undefined|yes|no))/
 
   public supports(code: string): boolean {
     return this.re.test(code)

@@ -34,7 +34,7 @@ export class AstBuilder {
   }
 
   public build(explorer: TokenExplorer, nodes: Node[] = []): Node[] {
-    if (explorer.isEmpty()) {
+    if (explorer.isEmpty() || 0 === this.builders.length) {
       return nodes
     }
 
