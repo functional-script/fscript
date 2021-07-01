@@ -1,4 +1,4 @@
-import { TokenParser, Token } from './types'
+import { TokenParser, Token, KEYWORD_LITERAL } from './types'
 import { TokenList } from './list'
 import { TokenError } from './error'
 import { CompilerOptions } from '../options'
@@ -310,14 +310,19 @@ export class IdentifierToken implements TokenParser {
  * Parse an fscript literral
  */
 export class LiteralToken implements TokenParser {
-  constructor(options: CompilerOptions) {}
+  private re: RegExp
+
+  constructor(options: CompilerOptions) {
+    this.re = new RegExp(
+      `^(([0-9.]+)|("[^"]*")|('[^']*')|(\`[^\`]*\`)|(${KEYWORD_LITERAL.join(
+        '|',
+      )}))`,
+    )
+  }
 
   static get ID(): string {
     return 'LITTERAL'
   }
-
-  private re =
-    /^(([0-9.]+)|("[^"]*")|('[^']*')|(`[^`]*`)|(true|false|null|void|undefined|yes|no))/
 
   public supports(code: string): boolean {
     return this.re.test(code)

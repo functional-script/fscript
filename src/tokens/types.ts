@@ -67,5 +67,11 @@ export type TokenIdentifier = SimpleTokenIdentifier | DoubleTokenIdentifier
 export const KEYWORD_BOOLEAN = ['true', 'false', 'yes', 'no']
 export type KeywordBoolean = typeof KEYWORD_BOOLEAN[number]
 
-export const KEYWORDS = [...KEYWORD_BOOLEAN]
-export type Keywords = typeof KEYWORDS[number]
+export const KEYWORD_VOIDISH = ['null', 'undefined', 'void', 'nothing']
+export type KeywordVoidish = typeof KEYWORD_VOIDISH[number]
+
+export const KEYWORD_LITERAL = [...KEYWORD_BOOLEAN, ...KEYWORD_VOIDISH]
+export type KeywordLiteral = typeof KEYWORD_LITERAL[number]
+
+export const KEYWORD = [...KEYWORD_LITERAL]
+export type Keyword = typeof KEYWORD[number]
