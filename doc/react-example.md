@@ -7,17 +7,15 @@ from react import React, { useState, useEffect }
 This is a documentation comment, like
 python it documents the current file file.
 
-Let's try to build a simple login form
-"""
+Let's try to build a simple login form !
 
-"""
-Let's start building a type wich will contains the
+The first step is to build a type wich will contains the
 login form props
 """
 export type LoginFormProps = {
   email :: String
   password :: String
-  errors :: [String]
+  errors :: String[]
 }
 
 """
@@ -30,19 +28,19 @@ export def LoginForm :: LoginFormProps -> React.ReactNode
     the email value
     """
     def [ email, setEmail ] :: [ String, String -> Void ]
-      useState email
+      useState:String: email
 
     """
     Let's do the same thing for the password
     """
     def [ password, setPassword ] :: [ String, String -> Void ]
-      useState password
+      useState:String: password
 
     """
     Finally let's build an errors state
     """
-    def [ errors, setErrors ] :: [ [String] : [String] -> Void ]
-      useState errors
+    def [ errors, setErrors ] :: [ String[], String[] -> Void ]
+      useState:String[]: errors
 
     """
     Let's create a change field function that will update

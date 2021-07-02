@@ -6,7 +6,8 @@ by the ML familly wich compiles to JavaScript or TypeScript.
 ## Specification
 
 In FScript code are made to be simple and very lightweight
-in syntax.
+in syntax. Inspired by Python and Haskell it allows to write
+functional and easy to read code base.
 
 ## AST examples
 
@@ -49,11 +50,14 @@ syntax:
 
 ```coffee
 # Declare an array of number
-def notes :: [Number] = [ 12, 13, 14, 19 ]
+def notes :: Number[] = [ 12, 13, 14, 19 ]
 
 # Declare an array of string using the
 # generic syntax
-def students :: Array String = [ "john", "Elly", "Jane" ]
+def students :: Array(String) = [ "john", "Elly", "Jane" ]
+
+# Note that parenthesis are optional !
+def students :: Array String = [ "John", "Elly", "Jane" ]
 
 # Create an objet
 def john = { firstname: "John",  lastname: "Doe" }
@@ -169,8 +173,8 @@ def y2 :: Number = add 3 5
 console.log x, y
 
 # You can also make function returning nothing
-# using the "Void" type
-def log :: String -> Void
+# using the "Nothing" type
+def log :: String -> Nothing
   member =>
     console.log member
     10
@@ -262,6 +266,7 @@ type Add = {
   toString :: Void -> String
 }
 
+
 type Console = {
   log :: Void -> Void
 
@@ -275,6 +280,45 @@ type Something =
   | User
 
 def console :: Console = window.console
+
+# You can also defined piped types
+def member :: String | Number = 10 # This is valid
+def secondMember :: String | Number = false # Error: boolean is not a string or a number
+
+
+# You can also use predicates in order to know
+# wich types you wanna use. the isType operator
+# operates like a typeof but with more power on it
+def isNumber :: String | Number -> Is Number
+  x => x isType Number
+
+# This is a complexe example of a map function
+def map :: in, out. (in -> out) -> in[] -> out[]
+  f arr => arr.map f
+
+map (a => a.toUppercase()) [ 'foo', 'bar' ]
+# or with a pipe operator
+[ 'foo', 'bar' ] |> map (a => a.toUppercase())
+# or with the special ? operator
+[ 'foo', 'bar' ] |> map ?.toUppercase()
+
+# Or with a special combine
+def combine :: a. a[] -> a[] -> a[]
+  a b => a.concat b
+
+combine ['foo'] ['bar'] # Output: [ 'foo', 'bar' ]
+combine ['foo'] [ 10 ] # Error !
+combine:String | Number: [ 'foo' ] [ 10 ] # Output: [ 'foo', 10 ]
+
+
+[ 'foo', 'bar' ]
+|> map ?.toUppercase()
+|> combine:String|Number: [ 19, 20 ]
+
+# You can also declare optional parameters wich
+# is exaclty the same thing as "Number | Nothing"
+def specialAdd :: Number? -> Number
+  x => if x isType Nothing then 0 else x
 ```
 
 ### Generics
@@ -283,31 +327,34 @@ In fscript, generics are also supported but with
 some differences
 
 ```coffee
+
 # Generics are in lowercase. Here
 # a is a generic of any type
-type Collection a = {
-  find :: String -> Collection(a)
+def identity :: a. a -> a
+  a => a
 
-  # parenthesis are optional
-  all :: Void -> Collection a
-}
+console.warn identity "test" # Output: "test"
+console.warn identity:Boolean: true # Output: true
+console.warn identity:String: 10 # Error: 10 is not a String
+
 
 # It's also possible to specify a type
 # wich generics must extends of
-type Identifiable User a = {
-  getSubject :: Void -> a
-}
-
-# Generics can also be declared into functions.
-# They are declare just before the signature and
-# separed by a "."
-def add :: a. a -> a -> a
-  x y => x + y
-
-# Extends also works there
 type Lengthwise = {
-  length :: Number
+  length :: Number | String
 }
+
+def loggingIdentity :: Lengthwise a. a -> a
+  a =>
+    console.log a.length
+    a
+
+loggingIdentity "test" # Output: 4 and "test"
+
+# We can also use generics with the special KeyOf
+# operators
+def getProperty :: someObject, (keyof someObject) key. key -> someObject -> someObject[key]
+  key object => object[key]
 
 # No need of parenthesis when using function
 # signature and generic extension
@@ -315,11 +362,7 @@ def length :: Lengthwise a . a -> Number
   subject => subject.length
 
 # You can also use the "KeyOf" special type
-def get
-  :: Object subject
-  . (KeyOf subject) key
-  . data
-  . key -> subject -> data
+def get :: Object subject, (KeyOf subject) key, data. key -> subject -> data
   = key subject => subject[key]
 
 def user = { firstname: "john" }
@@ -328,7 +371,7 @@ get 'firstname' user # "john"
 
 # You can also specify generics in the fonction
 # call (same syntax as typescript)
-get<TypeOf user, 'firstname', String> user, 'firstname'
+get:TypeOf user, 'firstname', String: user, 'firstname'
 
 type Collection = {
   [String] :: Number
